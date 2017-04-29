@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Stock Hawk</string>
-    <string name="default_stocks_apple">AAPL</string>
-    <string name="default_stocks_facebook">FB</string>
-    <string name="default_stocks_microsoft">MSFT</string>
-    <string name="default_stocks_yahoo">YHOO</string>
 </resources>
