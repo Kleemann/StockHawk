@@ -32,4 +32,7 @@
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
 
+    <string name="addStock_content_des">Add Stock</string>
+    <string name="addStock_textfield_content_des">Type name of stock</string>
+    <string name="menuItem_change_units_content_des">Change units</string>
 </resources>

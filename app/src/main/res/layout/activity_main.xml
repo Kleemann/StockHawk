@@ -33,6 +33,7 @@
         app:borderWidth="0dp"
         app:elevation="6dp"
         app:fabSize="normal"
+        android:contentDescription="@string/addStock_content_des"
         app:pressedTranslationZ="12dp" />
 
     <TextView
