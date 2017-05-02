@@ -79,6 +79,7 @@ public final class QuoteSyncJob {
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
                 if (quote == null || quote.getPrice() == null || quote.getChange() == null || quote.getChangeInPercent() == null) {
+                    PrefUtils.removeStock(context, symbol);
                     stockPref.remove(symbol);
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.post(new Runnable() {
