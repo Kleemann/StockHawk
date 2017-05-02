@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     @BindView(R.id.recycler_view)
     RecyclerView stockHistoryRecyclerView;
 
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.chart_his)
     LineChart chart;
 
     private StockHistoryAdapter adapter;
@@ -58,6 +61,30 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     }
 
 
+    void setChartWithData(HashMap<String, String> data) {
+
+        LinkedHashMap<String, String> sortedData = adapter.sortHashMapByValues(data);
+
+        List<Entry> entries = new ArrayList<Entry>();
+
+        Iterator it  = data.entrySet().iterator();
+        int i = 1;
+        while (it.hasNext()) {
+            Map.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
+            float k = Float.parseFloat(pair.getKey());
+            float v = Float.parseFloat(pair.getValue());
+            entries.add(new Entry(i, v));
+            i++;
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
+        dataSet.setColor(R.color.material_green_700);
+        dataSet.setValueTextColor(R.color.material_red_700);
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, Contract.Quote.makeUriForStock(mSymbol), null, null, null, null);
@@ -76,24 +103,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         }
 
         adapter.setData(historyEntries);
-
-        /*
-        List<Entry> entries = new ArrayList<Entry>();
-
-        Iterator it  = historyEntries.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
-
-            entries.add(new Entry(Float.parseFloat(pair.getKey()), Float.parseFloat(pair.getValue())));
-        }
-
-        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
-        dataSet.setColor(R.color.material_green_700);
-        dataSet.setValueTextColor(R.color.material_red_700);
-        LineData lineData = new LineData(dataSet);
-        chart.setData(lineData);
-        chart.invalidate(); // refresh
-        */
+        this.setChartWithData(historyEntries);
     }
 
     @Override
