@@ -36,4 +36,6 @@
     <string name="addStock_textfield_content_des">Type name of stock</string>
     <string name="menuItem_change_units_content_des">Change units</string>
     <string name="toast_stock_not_added_invalid">Stock Symbol %s not found. No stock was added.</string>
+    <string name="snackbar_offline_message">No network connectivity! Your stocks may be outdated</string>
+    <string name="snackbar_offline_action_title">Got it</string>
 </resources>

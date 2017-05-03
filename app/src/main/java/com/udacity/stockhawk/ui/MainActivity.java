@@ -1,11 +1,13 @@
 package com.udacity.stockhawk.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else if (!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
+            showOfflineAlertSnack();
         } else if (PrefUtils.getStocks(this).size() == 0) {
             swipeRefreshLayout.setRefreshing(false);
             error.setText(getString(R.string.error_no_stocks));
@@ -122,6 +125,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             error.setVisibility(View.GONE);
         }
+    }
+
+    private void showOfflineAlertSnack() {
+        Snackbar offlineSnackBar = Snackbar.make(swipeRefreshLayout, R.string.snackbar_offline_message, Snackbar.LENGTH_INDEFINITE);
+        offlineSnackBar.setAction(R.string.snackbar_offline_action_title, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Do Nothing
+            }
+        });
+        offlineSnackBar.show();
+
     }
 
     public void button(@SuppressWarnings("UnusedParameters") View view) {
@@ -158,7 +173,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             if (data.getCount() != 0) {
                 error.setVisibility(View.GONE);
             }
-            adapter.setCursor(data);
+        adapter.setCursor(data);
+        if (!networkUp()) {showOfflineAlertSnack();}
+
     }
 
 
