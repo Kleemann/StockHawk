@@ -13,9 +13,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 
@@ -75,13 +79,36 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             entries.add(new Entry(i, v));
             i++;
         }
-
-        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
+        String label = String.valueOf(R.string.chart_closing_price_label);
+        LineDataSet dataSet = new LineDataSet(entries, label); // add entries to dataset
         dataSet.setColor(R.color.material_green_700);
         dataSet.setValueTextColor(R.color.material_red_700);
+
         LineData lineData = new LineData(dataSet);
         chart.setData(lineData);
+
+        YAxis left = chart.getAxisLeft();
+        left.setDrawLabels(false);
+        left.setTextSize(12f);
+        left.setTextColor(R.color.colorPrimary);
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setTextColor(R.color.colorPrimary);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return adapter.getDate((long) value);
+            }
+        };
+        xAxis.setValueFormatter(formatter);
+        xAxis.setLabelRotationAngle(67f);
+        xAxis.setTextSize(12f);
+        xAxis.setTextColor(R.color.colorPrimary);
+
         chart.invalidate(); // refresh
+
     }
 
     @Override

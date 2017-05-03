@@ -38,4 +38,5 @@
     <string name="toast_stock_not_added_invalid">Stock Symbol %s not found. No stock was added.</string>
     <string name="snackbar_offline_message">No network connectivity! Your stocks may be outdated</string>
     <string name="snackbar_offline_action_title">Got it</string>
+    <string name="chart_closing_price_label">Closing Price</string>
 </resources>
