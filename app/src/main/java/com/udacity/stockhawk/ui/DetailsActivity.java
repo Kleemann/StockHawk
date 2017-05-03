@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,13 +62,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     }
 
 
-    void setChartWithData(HashMap<String, String> data) {
-
-        LinkedHashMap<String, String> sortedData = adapter.sortHashMapByValues(data);
-
+    void setChartWithData(TreeMap<String, String> data) {
         List<Entry> entries = new ArrayList<Entry>();
 
         Iterator it  = data.entrySet().iterator();
+        //Since the data is sorted by value, we can use an incremental value to add the closing prices
         int i = 1;
         while (it.hasNext()) {
             Map.Entry<String,String> pair = (Map.Entry<String,String>)it.next();
@@ -96,7 +95,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         String history = data.getString(Contract.Quote.POSITION_HISTORY);
         List<String> items = Arrays.asList(history.split("\\n"));
 
-        HashMap<String, String> historyEntries = new HashMap<String, String>();
+        TreeMap<String, String> historyEntries = new TreeMap<String, String>();
         for (String entry : items) {
             List<String> historyEntry = Arrays.asList(entry.split(","));
             historyEntries.put(historyEntry.get(0), historyEntry.get(1));

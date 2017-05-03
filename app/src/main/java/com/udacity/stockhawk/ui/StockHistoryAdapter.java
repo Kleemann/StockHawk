@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,26 +36,24 @@ public class StockHistoryAdapter extends RecyclerView.Adapter<StockHistoryAdapte
 
     private final Context context;
     private final DecimalFormat dollarFormat;
-    private HashMap<String, String> data;
+    private TreeMap<String, String> data;
 
     public StockHistoryAdapter(Context context) {
         dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.getDefault());
         this.context = context;
     }
 
-    void setData(HashMap<String, String> data) {
-        HashMap<String,String> sortedData = sortHashMapByValues(data);
-        this.data = sortedData;
+    void setData(TreeMap<String, String> data) {
+        this.data = data;
 
         notifyDataSetChanged();
     }
 
-
-    String getHistoryValueAtPosition(int position) {
+    private String getHistoryValueAtPosition(int position) {
         return (new ArrayList<String>(data.values())).get(position);
     }
 
-    String getHistoryKeyAtPosition(int position) {
+    private String getHistoryKeyAtPosition(int position) {
         return (new ArrayList<String>(data.keySet())).get(position);
     }
 
@@ -68,41 +67,10 @@ public class StockHistoryAdapter extends RecyclerView.Adapter<StockHistoryAdapte
         return  f.format(calendar.getTime());
     }
 
-
-    public LinkedHashMap<String, String> sortHashMapByValues(HashMap<String, String> passedMap) {
-        List<String> mapKeys = new ArrayList<>(passedMap.keySet());
-        List<String> mapValues = new ArrayList<>(passedMap.values());
-        Collections.sort(mapValues);
-        Collections.sort(mapKeys);
-
-        LinkedHashMap<String, String> sortedMap =
-                new LinkedHashMap<>();
-
-        Iterator<String> valueIt = mapValues.iterator();
-        while (valueIt.hasNext()) {
-            String val = valueIt.next();
-            Iterator<String> keyIt = mapKeys.iterator();
-
-            while (keyIt.hasNext()) {
-                String key = keyIt.next();
-                String comp1 = passedMap.get(key);
-                String comp2 = val;
-
-                if (comp1.equals(comp2)) {
-                    keyIt.remove();
-                    sortedMap.put(key, val);
-                    break;
-                }
-            }
-        }
-        return sortedMap;
-    }
-
     @Override
     public StockHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View item = LayoutInflater.from(context).inflate(R.layout.history_list_item, parent, false);
-
         return new StockHistoryViewHolder(item);
     }
 
