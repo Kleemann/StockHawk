@@ -86,6 +86,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         chart.setData(lineData);
         dataSet.setColor(Color.rgb(255,255,255));
         dataSet.setValueTextColor(Color.rgb(51,51,255));
+        dataSet.setValueTextSize(12f);
 
         YAxis left = chart.getAxisLeft();
         left.setDrawLabels(false);
@@ -98,18 +99,9 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return adapter.getDate((long) value);
-            }
-        };
-        xAxis.setValueFormatter(formatter);
         xAxis.setLabelRotationAngle(67f);
-        xAxis.setTextSize(12f);
+        xAxis.setTextSize(8f);
         xAxis.setTextColor(Color.rgb(255,255,255));
-
-        //chart.setExtraBottomOffset(40); //https://github.com/PhilJay/MPAndroidChart/issues/1657
 
         Description description = new Description();
         description.setText("");
