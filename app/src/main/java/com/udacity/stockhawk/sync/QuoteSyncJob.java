@@ -42,18 +42,14 @@ import yahoofinance.quotes.stock.StockQuote;
 
 public final class QuoteSyncJob {
 
-    private static final int ONE_OFF_ID = 2;
     public static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
 
     private static final int SYNC_JOB_INTERVAL_MINUTES = 1;
     private static final int SYNC_JOB_INTERVAL_SECONDS = (int) (TimeUnit.MINUTES.toSeconds(SYNC_JOB_INTERVAL_MINUTES));
     private static final int SYNC_JOB_FLEXTIME_SECONDS = SYNC_JOB_INTERVAL_SECONDS;
     private static boolean syncJobInit = false;
-    private static final String SYNC_JOB_TAG = "stockhawk_sync_job_tag";
+    private static final String SYNC_JOB_TAG = "com.udacity.stockhawk.stock.sync.job";
 
-    private static final int PERIOD = 10000;
-    private static final int INITIAL_BACKOFF = 100;
-    private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 2;
 
     private QuoteSyncJob() {
@@ -155,6 +151,7 @@ public final class QuoteSyncJob {
         if (syncJobInit) return;
 
         Timber.d("Scheduling a periodic task");
+        //Using firebase job dispatcher for lower minimum target. Which was also the one shown in the videos.
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
         Job syncJob = dispatcher.newJobBuilder()
@@ -164,30 +161,17 @@ public final class QuoteSyncJob {
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)
                 .setTrigger(Trigger.executionWindow(
-                        10,
-                        10 + 10
+                        SYNC_JOB_INTERVAL_SECONDS,
+                        SYNC_JOB_INTERVAL_SECONDS + SYNC_JOB_FLEXTIME_SECONDS
                 ))
                 .setReplaceCurrent(true)
                 .build();
         dispatcher.schedule(syncJob);
         syncJobInit = true;
-
-        /*JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
-
-
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setMinimumLatency(PERIOD);
-                //.setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
-
-
-        JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-        scheduler.schedule(builder.build());*/
     }
 
 
     public static synchronized void initialize(final Context context) {
-
         schedulePeriodic(context);
         syncImmediately(context);
 
@@ -202,21 +186,7 @@ public final class QuoteSyncJob {
             Intent nowIntent = new Intent(context, QuoteIntentService.class);
             context.startService(nowIntent);
         }
-        /*else {
-
-            JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
-
-
-            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
-
-
-            JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-            scheduler.schedule(builder.build());
-
-
-        }*/
+        //if network isn't available the scheduled job will execute when the device comes back online
     }
 
 }
