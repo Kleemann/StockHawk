@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -79,21 +80,22 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             entries.add(new Entry(i, v));
             i++;
         }
-        String label = String.valueOf(R.string.chart_closing_price_label);
-        LineDataSet dataSet = new LineDataSet(entries, label); // add entries to dataset
-        dataSet.setColor(R.color.material_green_700);
-        dataSet.setValueTextColor(R.color.material_red_700);
-
+        String label = this.getString(R.string.chart_closing_price_label);
+        LineDataSet dataSet = new LineDataSet(entries, label);
         LineData lineData = new LineData(dataSet);
         chart.setData(lineData);
+        dataSet.setColor(Color.rgb(255,255,255));
+        dataSet.setValueTextColor(Color.rgb(51,51,255));
 
         YAxis left = chart.getAxisLeft();
         left.setDrawLabels(false);
-        left.setTextSize(12f);
-        left.setTextColor(R.color.colorPrimary);
+        left.setTextColor(Color.rgb(255,255,255));
+
+        YAxis right = chart.getAxisRight();
+        right.setTextSize(12f);
+        right.setTextColor(Color.rgb(255,255,255));
 
         XAxis xAxis = chart.getXAxis();
-        xAxis.setTextColor(R.color.colorPrimary);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
@@ -105,7 +107,13 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         xAxis.setValueFormatter(formatter);
         xAxis.setLabelRotationAngle(67f);
         xAxis.setTextSize(12f);
-        xAxis.setTextColor(R.color.colorPrimary);
+        xAxis.setTextColor(Color.rgb(255,255,255));
+
+        //chart.setExtraBottomOffset(40); //https://github.com/PhilJay/MPAndroidChart/issues/1657
+
+        Description description = new Description();
+        description.setText("");
+        chart.setDescription(description);
 
         chart.invalidate(); // refresh
 
