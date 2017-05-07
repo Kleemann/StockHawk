@@ -12,6 +12,13 @@ import android.os.Looper;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.Driver;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
@@ -24,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 import yahoofinance.Stock;
@@ -35,9 +43,16 @@ import yahoofinance.quotes.stock.StockQuote;
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
-    private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
-    private static final int PERIOD = 300000;
-    private static final int INITIAL_BACKOFF = 10000;
+    public static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
+
+    private static final int SYNC_JOB_INTERVAL_MINUTES = 1;
+    private static final int SYNC_JOB_INTERVAL_SECONDS = (int) (TimeUnit.MINUTES.toSeconds(SYNC_JOB_INTERVAL_MINUTES));
+    private static final int SYNC_JOB_FLEXTIME_SECONDS = SYNC_JOB_INTERVAL_SECONDS;
+    private static boolean syncJobInit = false;
+    private static final String SYNC_JOB_TAG = "stockhawk_sync_job_tag";
+
+    private static final int PERIOD = 10000;
+    private static final int INITIAL_BACKOFF = 100;
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 2;
 
@@ -136,21 +151,38 @@ public final class QuoteSyncJob {
         }
     }
 
-    private static void schedulePeriodic(Context context) {
+    synchronized private static void schedulePeriodic(Context context) {
+        if (syncJobInit) return;
+
         Timber.d("Scheduling a periodic task");
+        Driver driver = new GooglePlayDriver(context);
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
+        Job syncJob = dispatcher.newJobBuilder()
+                .setService(QuoteJobService.class)
+                .setTag(SYNC_JOB_TAG)
+                .setConstraints(Constraint.ON_ANY_NETWORK)
+                .setLifetime(Lifetime.FOREVER)
+                .setRecurring(true)
+                .setTrigger(Trigger.executionWindow(
+                        10,
+                        10 + 10
+                ))
+                .setReplaceCurrent(true)
+                .build();
+        dispatcher.schedule(syncJob);
+        syncJobInit = true;
 
-
-        JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
+        /*JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
 
 
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(PERIOD)
-                .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
+                .setMinimumLatency(PERIOD);
+                //.setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 
 
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-        scheduler.schedule(builder.build());
+        scheduler.schedule(builder.build());*/
     }
 
 
@@ -169,7 +201,8 @@ public final class QuoteSyncJob {
         if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
             Intent nowIntent = new Intent(context, QuoteIntentService.class);
             context.startService(nowIntent);
-        } else {
+        }
+        /*else {
 
             JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
 
@@ -183,8 +216,7 @@ public final class QuoteSyncJob {
             scheduler.schedule(builder.build());
 
 
-        }
+        }*/
     }
-
 
 }

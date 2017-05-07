@@ -20,7 +20,8 @@
             android:id="@+id/chart_his"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:contentDescription="@string/stock_graph_content_dis"/>
 
 
         <android.support.v7.widget.RecyclerView

@@ -32,13 +32,35 @@
             android:authorities="com.udacity.stockhawk"
             android:exported="false" />
 
-        <service
-            android:name=".sync.QuoteJobService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name=".ui.DetailsActivity"></activity>
+        <service android:name=".sync.QuoteJobService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
+        <activity android:name=".ui.DetailsActivity" />
+
+        <service android:name=".widget.StockWidgetIntentService" />
+
+
+        <receiver
+            android:name=".widget.StockWidgetProvider"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.udacity.stockhawk.ACTION_DATA_UPDATED" />
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stock_widget_info" />
+        </receiver>
+
+
     </application>
 
 </manifest>
