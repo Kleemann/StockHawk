@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.sync.QuoteJobService;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.ui.DetailsActivity;
 import com.udacity.stockhawk.ui.MainActivity;
 
 /**
@@ -41,7 +42,10 @@ public class StockWidgetProvider extends AppWidgetProvider {
             remoteViews.setEmptyView(R.id.stackWidgetView, R.id.stackWidgetEmptyView);
 
             // set intent for item click (opens main activity)
-            Intent viewIntent = new Intent(context, MainActivity.class);
+            Intent viewIntent = new Intent(context, DetailsActivity.class);
+            //viewIntent.setAction(MainActivity.ACTION_VIEW);
+            viewIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            viewIntent.setData(Uri.parse(viewIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             PendingIntent viewPendingIntent = PendingIntent.getActivity(context, 0, viewIntent, 0);
             remoteViews.setPendingIntentTemplate(R.id.stackWidgetView, viewPendingIntent);

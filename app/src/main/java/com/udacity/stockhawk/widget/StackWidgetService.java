@@ -1,5 +1,6 @@
 package com.udacity.stockhawk.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentProvider;
 import android.content.Context;
@@ -16,6 +17,8 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.data.StockProvider;
+import com.udacity.stockhawk.ui.DetailsActivity;
+import com.udacity.stockhawk.ui.MainActivity;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -113,7 +116,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.stock_widget_item);
 
         if (position <= getCount()) {
-            rv.setTextViewText(R.id.tv_symbol, data.getString(Contract.Quote.POSITION_SYMBOL));
+            String symbol = data.getString(Contract.Quote.POSITION_SYMBOL);
+            rv.setTextViewText(R.id.tv_symbol, symbol);
 
             float closingPrice = data.getFloat(Contract.Quote.POSITION_PRICE);
             rv.setTextViewText(R.id.tv_closing_price, dollarFormat.format((double)closingPrice));
@@ -128,6 +132,10 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             } else {
                 rv.setTextViewText(R.id.tv_change, percentage);
             }
+
+            Intent fillInIntent = new Intent();
+            fillInIntent.putExtra(DetailsActivity.STOCK_SYMBOL_KEY, symbol);
+            rv.setOnClickFillInIntent(R.id.stackWidgetItem, fillInIntent);
         }
 
         return rv;

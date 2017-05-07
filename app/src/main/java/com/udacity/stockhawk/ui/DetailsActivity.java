@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    static String STOCK_SYMBOL_KEY = "stock_id";
+    public static String STOCK_SYMBOL_KEY = "stock_id";
     String mSymbol;
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.recycler_view)
