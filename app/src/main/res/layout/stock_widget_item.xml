@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/StockSymbolTextStyle"
-        android:text="TextView"
         android:textSize="18sp"
         android:textAlignment="center" />
 
@@ -19,16 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/BidPriceTextStyle"
-        android:textSize="18sp"
-        android:text="TextView"
+        android:textSize="15sp"
         android:textAlignment="center" />
 
     <TextView
         android:id="@+id/tv_change"
         style="@style/PercentChangeTextStyle"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:textAlignment="center" />
 </LinearLayout>

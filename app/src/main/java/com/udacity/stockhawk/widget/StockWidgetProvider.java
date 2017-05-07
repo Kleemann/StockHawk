@@ -62,7 +62,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
             ComponentName thisWidget = new ComponentName(context, StockWidgetProvider.class);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-            // Update list content of the widget
+
             // This will call onDataSetChanged() method
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.stackWidgetView);
 
