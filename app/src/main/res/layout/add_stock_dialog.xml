@@ -14,6 +14,7 @@
         android:layout_marginTop="16dp"
         android:hint="@string/dialog_hint"
         android:inputType="textCapCharacters"
-        android:contentDescription="@string/addStock_textfield_content_des"/>
+        android:contentDescription="@string/addStock_textfield_content_des"
+        android:digits="ABCDEFGHIJKLMNOPWRSTUVWXYZ"/>
 
 </LinearLayout>
